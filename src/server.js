@@ -17,6 +17,10 @@ $.init.add((done) => {
   $.env = env;
   done();
 });
+//初始化MongoDB
+$.init.load(path.resolve(__dirname, 'init', 'mongodb.js'))
+//加载Models
+$.init.load(path.resolve(__dirname, 'models'));
 //初始化
 $.init((err) => {
   if(err){
@@ -25,4 +29,10 @@ $.init((err) => {
   }else{
     console.log('inited [env=%s]', $.env);
   }
+  const item = new $.model.User({
+    name: `User${$.utils.date('YmdHis')}`,
+    password: '123',
+    nickname: 'libcaos'
+  });
+  item.save(console.log);
 });
