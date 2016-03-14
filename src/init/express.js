@@ -7,6 +7,8 @@ import multiparty from 'multiparty';
 import path from 'path';
 
 module.exports = function (done){
+  const debug = $.createDebug('init:express');
+  debug('initing Express...');
   const app = express();
   app.use(bodyParser.json());
   // parse application/x-www-form-urlencoded
