@@ -9,9 +9,9 @@
 
 // }, console.log);
 
-$.method('user.get').call({
-  name: 'libchaos',
-}, console.log);
+// $.method('user.get').call({
+//   name: 'libchaos',
+// }, console.log);
 
 
 // $.method('user.update').call({
