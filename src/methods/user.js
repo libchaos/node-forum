@@ -22,7 +22,8 @@ module.exports = function(done) {
       })
     }
   })
-  $.method('user.add').register(async function(params, callback) {
+  $.method('user.add').register(async function(params) {
+
     // callback(params);
     params.name = params.name.toLowerCase();
 
@@ -30,19 +31,19 @@ module.exports = function(done) {
       const user = await $.method('user.get').call({
         name: params.name
       });
-      if (user) return callback(new Error(`user ${params.name} already exists`));
+      if (user) throw new Error(`user ${params.name} already exists`);
     }
 
     {
       const email = await $.method('user.get').call({
         name: params.email
       });
-      if (email) return callback(new Error(`user ${params.email} already exists`));
+      if (email) throw new Error(`user ${params.email} already exists`);
 
     }
     params.password = $.utils.encryptPassword(params.password.toString());
     const user = new $.model.User(params);
-    user.save(callback);
+    return user.save();
 
   });
 
@@ -61,7 +62,7 @@ module.exports = function(done) {
     }
   });
 
-  $.method('user.get').register(async function(params, callback) {
+  $.method('user.get').register(async function(params) {
     const query = {};
     if (params._id) {
       query._id = params._id;
@@ -70,9 +71,9 @@ module.exports = function(done) {
     } else if (params.email) {
       query.email = params.email;
     } else {
-      return callback(new Error('missing parameter _id|name|email'));
+      throw new Error('missing parameter _id|name|email');
     }
-    $.model.User.findOne(query, callback);
+    return $.model.User.findOne(query);
 
   });
 
@@ -92,10 +93,10 @@ module.exports = function(done) {
   });
 
 
-  $.method('user.update').register(async function(params, callback) {
+  $.method('user.update').register(async function(params) {
     const user = await $.method('user.get').call(params);
     if (!user) {
-      return callback(new Error('user does not exists'));
+      throw new Error('user does not exists');
     }
     const update = {};
     if (params.name && user.name !== params.name) {
@@ -114,11 +115,11 @@ module.exports = function(done) {
       update.about = params.about;
     }
 
-    $.model.User.update({
+    return $.model.User.update({
       _id: user._id
     }, {
       $set: update
-    }, callback);
+    });
 
   });
   done();
