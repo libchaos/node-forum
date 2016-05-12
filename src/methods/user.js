@@ -1,7 +1,13 @@
 'use strict';
 
+
 import validator from 'validator';
 
+/**
+ * (user内部方法)
+ *
+ * @param done (description)
+ */
 module.exports = function(done) {
   $.method('user.add').check({
     name: {
